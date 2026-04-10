@@ -43,7 +43,7 @@ class RegisterUser:
             id=UserId.generate(),
             username=username,
             email=email,
-            password_hash=password_hash
+            password_hash=password_hash,
         )
 
         # Сохраняем

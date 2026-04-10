@@ -30,5 +30,5 @@ class DeleteReview:
         review = self.review_repository.get_by_id(id)
         if review is None:
             raise ReviewNotFoundError(f"Отзыв с ID {id.value} не найден")
-        
+
         self.review_repository.delete(review)

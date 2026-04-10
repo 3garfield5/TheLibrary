@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .base import BaseValueObject
 
 
@@ -11,4 +13,5 @@ class BookId(BaseValueObject):
     @staticmethod
     def generate() -> BookId:
         import uuid
+
         return BookId(str(uuid.uuid4()))

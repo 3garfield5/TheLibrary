@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from thelibrary.domain.value_objects import Email, PasswordHash, UserId, UserName
 
 
@@ -28,18 +30,9 @@ class User:
 
     @classmethod
     def create(
-        cls, 
-        id: UserId, 
-        username: UserName, 
-        email: Email, 
-        password_hash: PasswordHash
+        cls, id: UserId, username: UserName, email: Email, password_hash: PasswordHash
     ) -> User:
-        return cls(
-            id=id, 
-            username=username, 
-            email=email, 
-            password_hash=password_hash
-        )
+        return cls(id=id, username=username, email=email, password_hash=password_hash)
 
     def change_email(self, new_email: Email) -> None:
         if self._email == new_email:

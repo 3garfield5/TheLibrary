@@ -1,4 +1,5 @@
 from .author import Author
+from .base import BaseValueObject
 from .book_id import BookId
 from .comment import Comment
 from .email import Email
@@ -24,4 +25,5 @@ __all__ = [
     "Title",
     "UserId",
     "UserName",
+    "BaseValueObject",
 ]

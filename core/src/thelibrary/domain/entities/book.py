@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from thelibrary.domain.value_objects import (
     Author,
     BookId,

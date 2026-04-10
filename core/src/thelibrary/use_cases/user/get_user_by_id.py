@@ -4,8 +4,8 @@ from thelibrary.domain.entities import User
 from thelibrary.domain.repositories.user_repository import UserRepository
 from thelibrary.domain.value_objects import UserId
 from thelibrary.exceptions.domain_exceptions import (
-    UserNotFoundError,
     InvalidUserDataError,
+    UserNotFoundError,
 )
 
 

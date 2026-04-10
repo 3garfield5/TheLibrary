@@ -32,9 +32,11 @@ class CreateReview:
             raise InvalidReviewDataError(
                 f"Некорректные данные для создания отзыва: {str(e)}"
             ) from e
-        
+
         # Проверяем, есть ли уже отзыв от этого пользователя на эту книгу
-        existing_review = self.review_repository.get_by_book_id_and_user_id(book_id, user_id)
+        existing_review = self.review_repository.get_by_book_id_and_user_id(
+            book_id, user_id
+        )
         if existing_review is not None:
             raise ReviewAlreadyExistsError(
                 f"Пользователь с ID {user_id.value} уже оставил отзыв на книгу с ID {book_id.value}"
@@ -45,7 +47,7 @@ class CreateReview:
             book_id=book_id,
             rating=rating,
             comment=comment,
-            user_id=user_id
+            user_id=user_id,
         )
 
         self.review_repository.save(review)

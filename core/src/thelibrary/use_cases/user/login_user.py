@@ -36,5 +36,5 @@ class LoginUser:
         # Проверяем пароль
         if user.password_hash != password_hash:
             raise InvalidLoginDataError("Неверный пароль")
-        
+
         return user.id

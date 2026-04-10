@@ -19,5 +19,7 @@ class ReviewRepository(ABC):
         pass
 
     @abstractmethod
-    def get_by_book_id_and_user_id(self, book_id: BookId, user_id: UserId) -> Optional[Review]:
+    def get_by_book_id_and_user_id(
+        self, book_id: BookId, user_id: UserId
+    ) -> Optional[Review]:
         pass

@@ -45,15 +45,17 @@ class CreateBook:
         # Проверяем, существует ли книга
         existing_book = self.book_repository.get_by_title(title)
         if existing_book is not None:
-            raise BookAlreadyExistsError(f"Книга с названием {title.value} уже существует")
-        
+            raise BookAlreadyExistsError(
+                f"Книга с названием {title.value} уже существует"
+            )
+
         book = Book.create(
             id=BookId.generate(),
             title=title,
             author=author,
             rating=rating,
             ratings_count=ratings_count,
-            release_year=release_year
+            release_year=release_year,
         )
 
         self.book_repository.save(book)

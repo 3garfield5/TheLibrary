@@ -30,5 +30,5 @@ class DeleteBook:
         book = self.book_repository.get_by_id(id)
         if book is None:
             raise BookNotFoundError(f"Книга с ID {id.value} не найдена")
-        
+
         self.book_repository.delete(book)
