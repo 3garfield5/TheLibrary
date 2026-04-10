@@ -62,6 +62,16 @@ class ReviewNotFoundError(Exception):
 
 
 class InvalidUserDataError(Exception):
-    """Поднимается, когда данные для создания пользователя некорректны."""
+    """Поднимается, когда данные пользователя некорректны."""
+
+    pass
+
+class InvalidUserListDataError(Exception):
+    """Поднимается, когда данные для создания списка некорректны."""
+
+    pass
+
+class UserListAlreadyExistsError(Exception):
+    """Поднимается, когда список с такими уникальными атрибутами уже существует."""
 
     pass
