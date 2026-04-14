@@ -2,7 +2,13 @@ from dataclasses import dataclass
 
 from thelibrary.domain.entities.user import User
 from thelibrary.domain.repositories.user_repository import UserRepository
-from thelibrary.domain.value_objects import Email, PasswordHash, UserId, UserName
+from thelibrary.domain.value_objects import (
+    Email,
+    IsAdmin,
+    PasswordHash,
+    UserId,
+    UserName,
+)
 from thelibrary.exceptions.domain_exceptions import (
     InvalidRegistrationDataError,
     UserAlreadyExistsError,
@@ -44,6 +50,9 @@ class RegisterUser:
             username=username,
             email=email,
             password_hash=password_hash,
+            is_admin=IsAdmin(
+                False
+            ),  # по умолчанию обычный пользователь, админов будем создавать вручную в БД или через админку
         )
 
         # Сохраняем

@@ -10,5 +10,5 @@ class Rating(BaseValueObject):
         if not isinstance(self.value, float):
             raise TypeError("Book rating must be float")
 
-        if not (1 <= self.value <= 10):
-            raise ValueError("Book rating must be between 1 and 10")
+        if not (0 <= self.value <= 10):
+            raise ValueError("Book rating must be between 0 and 10")

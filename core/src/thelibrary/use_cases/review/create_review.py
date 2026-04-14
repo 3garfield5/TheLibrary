@@ -2,7 +2,13 @@ from dataclasses import dataclass
 
 from thelibrary.domain.entities import Review
 from thelibrary.domain.repositories.review_repository import ReviewRepository
-from thelibrary.domain.value_objects import BookId, Comment, Rating, ReviewId, UserId
+from thelibrary.domain.value_objects import (
+    BookId,
+    Comment,
+    ReviewId,
+    ReviewRating,
+    UserId,
+)
 from thelibrary.exceptions.domain_exceptions import (
     InvalidReviewDataError,
     ReviewAlreadyExistsError,
@@ -12,7 +18,7 @@ from thelibrary.exceptions.domain_exceptions import (
 @dataclass(frozen=True)
 class CreateReviewCommand:
     book_id: str
-    rating: float
+    rating: int
     comment: str
     user_id: str
 
@@ -25,7 +31,7 @@ class CreateReview:
         # Преобразуем в value objects
         try:
             book_id = BookId(command.book_id)
-            rating = Rating(command.rating)
+            rating = ReviewRating(command.rating)
             comment = Comment(command.comment)
             user_id = UserId(command.user_id)
         except Exception as e:

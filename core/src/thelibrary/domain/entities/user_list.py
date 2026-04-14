@@ -65,7 +65,12 @@ class UserList:
         books: list[BookId] | None = None,
     ) -> UserList:
         return cls(
-            id=id, title=title, description=description, user_id=user_id, is_private=is_private, books=books
+            id=id,
+            title=title,
+            description=description,
+            user_id=user_id,
+            is_private=is_private,
+            books=books,
         )
 
     # fill with methods

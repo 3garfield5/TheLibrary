@@ -1,19 +1,25 @@
 from __future__ import annotations
 
-from thelibrary.domain.value_objects import BookId, Comment, Rating, ReviewId, UserId
+from thelibrary.domain.value_objects import (
+    BookId,
+    Comment,
+    ReviewId,
+    ReviewRating,
+    UserId,
+)
 
 
 class Review:
     def __init__(
         self,
         id: ReviewId,
-        rating: Rating,
+        rating: ReviewRating,
         comment: Comment,
         book_id: BookId,
         user_id: UserId,
     ):
         self._id: ReviewId = id
-        self._rating: Rating = rating
+        self._rating: ReviewRating = rating
         self._comment: Comment = comment
         self._book_id: BookId = book_id
         self._user_id: UserId = user_id
@@ -23,7 +29,7 @@ class Review:
         return self._id
 
     @property
-    def rating(self) -> Rating:
+    def rating(self) -> ReviewRating:
         return self._rating
 
     @property
@@ -45,7 +51,7 @@ class Review:
     def create(
         cls,
         id: ReviewId,
-        rating: Rating,
+        rating: ReviewRating,
         comment: Comment,
         book_id: BookId,
         user_id: UserId,

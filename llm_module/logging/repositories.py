@@ -11,4 +11,4 @@ class InMemoryLLMLogRepository:
         self._records.append(record)
 
     def list_recent(self, limit: int = 100) -> list[LLMLogRecord]:
-        return self._records[-max(limit, 0):][::-1]
+        return self._records[-max(limit, 0) :][::-1]

@@ -3,7 +3,7 @@ from __future__ import annotations
 from .base import BaseValueObject
 
 
-class Rating(BaseValueObject):
+class ReviewRating(BaseValueObject):
     value: int
 
     def _validate(self) -> None:

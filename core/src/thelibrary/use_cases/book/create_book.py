@@ -20,8 +20,6 @@ from thelibrary.exceptions.domain_exceptions import (
 class CreateBookCommand:
     title: str
     author: str
-    rating: float
-    ratings_count: int
     release_year: int
 
 
@@ -34,8 +32,6 @@ class CreateBook:
         try:
             title = Title(command.title)
             author = Author(command.author)
-            rating = Rating(command.rating)
-            ratings_count = RatingsCount(command.ratings_count)
             release_year = ReleaseYear(command.release_year)
         except Exception as e:
             raise InvalidBookDataError(
@@ -53,8 +49,8 @@ class CreateBook:
             id=BookId.generate(),
             title=title,
             author=author,
-            rating=rating,
-            ratings_count=ratings_count,
+            rating=Rating(0.0),  # начальный рейтинг
+            ratings_count=RatingsCount(0),  # начальное количество оценок
             release_year=release_year,
         )
 

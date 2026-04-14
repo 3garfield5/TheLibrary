@@ -19,7 +19,9 @@ class LangChainChatOpenAITransport:
         temperature: float = 0.0,
     ):
         resolved_api_key = api_key or os.getenv("OPENAI_API_KEY") or "EMPTY"
-        resolved_base_url = (base_url or os.getenv("OPENAI_BASE_URL") or "").strip() or None
+        resolved_base_url = (
+            base_url or os.getenv("OPENAI_BASE_URL") or ""
+        ).strip() or None
 
         self.model = model
         self._llm = ChatOpenAI(

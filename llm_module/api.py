@@ -70,7 +70,10 @@ def recommend(payload: RecommendIn) -> RecommendOut:
     request = RecommendationInput(
         user_id=payload.user_id,
         list_id=payload.list_id,
-        seeds=tuple(BookSeed(title=seed.title, author=seed.author, genres=tuple(seed.genres)) for seed in payload.seeds),
+        seeds=tuple(
+            BookSeed(title=seed.title, author=seed.author, genres=tuple(seed.genres))
+            for seed in payload.seeds
+        ),
         limit=payload.limit,
         language=payload.language,
     )

@@ -2,7 +2,12 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from .contracts import LLMLogRecord, Recommendation, RecommendationInput, RecommendationResult
+from .contracts import (
+    LLMLogRecord,
+    Recommendation,
+    RecommendationInput,
+    RecommendationResult,
+)
 from .exceptions import LLMValidationError
 from .ports import LLMLogRepository, LLMProvider
 
@@ -24,7 +29,9 @@ class RecommendationService:
                 created_at=started_at,
                 model_name=result.model_name,
                 recommendations_count=len(result.recommendations),
-                latency_ms=int((datetime.now(timezone.utc) - started_at).total_seconds() * 1000),
+                latency_ms=int(
+                    (datetime.now(timezone.utc) - started_at).total_seconds() * 1000
+                ),
             )
         )
 
@@ -38,8 +45,13 @@ class RecommendationService:
         if not payload.seeds:
             raise LLMValidationError("seeds must contain at least one book")
 
-    def _postprocess(self, result: RecommendationResult, payload: RecommendationInput) -> RecommendationResult:
-        existing = {(seed.title.strip().casefold(), seed.author.strip().casefold()) for seed in payload.seeds}
+    def _postprocess(
+        self, result: RecommendationResult, payload: RecommendationInput
+    ) -> RecommendationResult:
+        existing = {
+            (seed.title.strip().casefold(), seed.author.strip().casefold())
+            for seed in payload.seeds
+        }
         seen: set[tuple[str, str]] = set()
         cleaned: list[Recommendation] = []
 
@@ -69,7 +81,9 @@ class RecommendationService:
             if len(cleaned) >= payload.limit:
                 break
 
-        return RecommendationResult(recommendations=tuple(cleaned), model_name=result.model_name)
+        return RecommendationResult(
+            recommendations=tuple(cleaned), model_name=result.model_name
+        )
 
     def _is_low_quality_reason(self, reason: str) -> bool:
         normalized = reason.strip()

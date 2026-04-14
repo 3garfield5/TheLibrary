@@ -16,7 +16,9 @@ class OllamaChatTransport:
         timeout_seconds: float = 60.0,
     ):
         self.model = model
-        self.base_url = (base_url or os.getenv("OLLAMA_BASE_URL") or "http://localhost:11434").rstrip("/")
+        self.base_url = (
+            base_url or os.getenv("OLLAMA_BASE_URL") or "http://localhost:11434"
+        ).rstrip("/")
         self.timeout_seconds = timeout_seconds
 
     def __call__(self, system_prompt: str, user_prompt: str) -> str:

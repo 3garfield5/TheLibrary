@@ -28,8 +28,14 @@ class OpenAIResponsesTransport:
             {
                 "model": self.model,
                 "input": [
-                    {"role": "system", "content": [{"type": "input_text", "text": system_prompt}]},
-                    {"role": "user", "content": [{"type": "input_text", "text": user_prompt}]},
+                    {
+                        "role": "system",
+                        "content": [{"type": "input_text", "text": system_prompt}],
+                    },
+                    {
+                        "role": "user",
+                        "content": [{"type": "input_text", "text": user_prompt}],
+                    },
                 ],
                 "text": {"format": {"type": "text"}},
             }

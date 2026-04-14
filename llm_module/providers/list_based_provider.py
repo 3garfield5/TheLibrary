@@ -30,7 +30,9 @@ class ListBasedLLMProvider:
     def generate(self, payload: RecommendationInput) -> RecommendationResult:
         system_prompt = build_system_prompt(payload.language)
         user_prompt = build_user_prompt(payload)
-        raw_structured = self._transport(system_prompt, user_prompt, RecommendationEnvelopeSchema)
+        raw_structured = self._transport(
+            system_prompt, user_prompt, RecommendationEnvelopeSchema
+        )
         structured = RecommendationEnvelopeSchema.model_validate(raw_structured)
 
         return RecommendationResult(
