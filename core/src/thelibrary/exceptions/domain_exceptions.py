@@ -77,3 +77,9 @@ class UserListAlreadyExistsError(Exception):
     """Поднимается, когда список с такими уникальными атрибутами уже существует."""
 
     pass
+
+
+class InvalidLLMRequestError(Exception):
+    """Поднимается, когда данные для LLM-запроса некорректны."""
+
+    pass

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+from collections import defaultdict
 from pathlib import Path
+from statistics import fmean
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -26,26 +28,6 @@ def _book_text(book: CatalogBook) -> str:
 
 def _book_key(title: str, author: str) -> tuple[str, str]:
     return title.strip().casefold(), author.strip().casefold()
-
-
-def _cosine(lhs: tuple[float, ...], rhs: tuple[float, ...]) -> float:
-    if not lhs or not rhs:
-        return 0.0
-    n = min(len(lhs), len(rhs))
-    if n == 0:
-        return 0.0
-    dot = 0.0
-    a2 = 0.0
-    b2 = 0.0
-    for i in range(n):
-        a = lhs[i]
-        b = rhs[i]
-        dot += a * b
-        a2 += a * a
-        b2 += b * b
-    if a2 == 0.0 or b2 == 0.0:
-        return 0.0
-    return dot / ((a2 ** 0.5) * (b2 ** 0.5))
 
 
 class Catalog:
@@ -145,17 +127,25 @@ class SimpleRecommenderService:
         self.profile_model_name = profile_model_name
 
         try:
+            import numpy as np
             from sentence_transformers import SentenceTransformer
         except ModuleNotFoundError as exc:
-            raise LLMProviderError("sentence-transformers is required") from exc
+            raise LLMProviderError("sentence-transformers and numpy are required") from exc
 
+        self._np = np
         self.encoder = SentenceTransformer(profile_embedding_model)
         self.retriever = FaissRetriever(catalog, faiss_index_path, faiss_meta_path, use_faiss)
 
-        self._book_embeddings: dict[str, tuple[float, ...]] = {}
-        for book in catalog.books:
-            emb = self.encoder.encode(_book_text(book), normalize_embeddings=True)
-            self._book_embeddings[book.id] = tuple(float(x) for x in emb)
+        self._book_refs: tuple[CatalogBook, ...] = catalog.books
+        if self._book_refs:
+            book_texts = [_book_text(book) for book in self._book_refs]
+            self._book_matrix = self.encoder.encode(
+                book_texts,
+                normalize_embeddings=True,
+                convert_to_numpy=True,
+            ).astype("float32")
+        else:
+            self._book_matrix = self._np.zeros((0, 0), dtype="float32")
 
     def _user_embedding(self, payload: RecommendRequest) -> tuple[float, ...]:
         lines: list[str] = [f"user_id={payload.user_id}"]
@@ -166,20 +156,20 @@ class SimpleRecommenderService:
                 f"review {review.get('title','')} {review.get('author','')} rating={review.get('rating', 0)} {review.get('comment', '')}"
             )
         text = "\n".join(lines)
-        emb = self.encoder.encode(text, normalize_embeddings=True)
+        emb = self.encoder.encode(text, normalize_embeddings=True, convert_to_numpy=True)
         return tuple(float(x) for x in emb)
 
     def _social_map(self, reviews: tuple[dict, ...]) -> dict[tuple[str, str], float]:
-        buckets: dict[tuple[str, str], list[float]] = {}
+        buckets: defaultdict[tuple[str, str], list[float]] = defaultdict(list)
         for r in reviews:
             key = _book_key(str(r.get("title", "")), str(r.get("author", "")))
-            buckets.setdefault(key, []).append(float(r.get("rating", 0.0)))
+            buckets[key].append(float(r.get("rating", 0.0)))
 
         out: dict[tuple[str, str], float] = {}
         for key, ratings in buckets.items():
             if not ratings:
                 continue
-            avg = sum(ratings) / len(ratings)
+            avg = fmean(ratings)
             out[key] = (avg - 3.0) / 2.0 * 0.15
         return out
 
@@ -189,12 +179,26 @@ class SimpleRecommenderService:
             if hits:
                 return hits
 
-        scored: list[tuple[CatalogBook, float]] = []
-        for book in self.catalog.books:
-            sim = _cosine(user_vector, self._book_embeddings[book.id])
-            scored.append((book, sim))
-        scored.sort(key=lambda x: x[1], reverse=True)
-        return scored[: max(limit * 4, 20)]
+        if self._book_matrix.size == 0:
+            return []
+
+        query = self._np.asarray(user_vector, dtype="float32")
+        if query.shape[0] != self._book_matrix.shape[1]:
+            return []
+
+        # Embeddings are normalized, so cosine similarity equals dot product.
+        scores = self._book_matrix @ query
+        top_k = min(max(limit * 4, 20), scores.shape[0])
+        if top_k <= 0:
+            return []
+
+        if top_k == scores.shape[0]:
+            top_idx = self._np.argsort(scores)[::-1]
+        else:
+            candidate_idx = self._np.argpartition(-scores, top_k - 1)[:top_k]
+            top_idx = candidate_idx[self._np.argsort(scores[candidate_idx])[::-1]]
+
+        return [(self._book_refs[int(idx)], float(scores[int(idx)])) for idx in top_idx]
 
     def _pick_with_llm(
         self,

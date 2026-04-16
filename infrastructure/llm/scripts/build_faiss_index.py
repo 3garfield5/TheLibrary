@@ -22,19 +22,19 @@ def main() -> None:
     parser.add_argument(
         "--catalog",
         type=Path,
-        default=Path("llm_module/catalog_data/books_40.json"),
+        default=Path("infrastructure/llm/catalog_data/books_40.json"),
         help="Path to catalog JSON file.",
     )
     parser.add_argument(
         "--index-out",
         type=Path,
-        default=Path("llm_module/catalog_data/books_40.faiss"),
+        default=Path("infrastructure/llm/catalog_data/books_40.faiss"),
         help="Output path for FAISS index.",
     )
     parser.add_argument(
         "--meta-out",
         type=Path,
-        default=Path("llm_module/catalog_data/books_40.faiss.meta.json"),
+        default=Path("infrastructure/llm/catalog_data/books_40.faiss.meta.json"),
         help="Output path for metadata that maps FAISS ids to book ids.",
     )
     parser.add_argument(

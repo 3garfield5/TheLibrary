@@ -16,5 +16,5 @@ EXPOSE 8000
 
 ENV APP_HOST=0.0.0.0 APP_PORT=8000
 
-# Run the FastAPI app. Adjust module path if needed.
-CMD ["uvicorn", "llm_module.api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run the FastAPI app.
+CMD ["uvicorn", "api.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

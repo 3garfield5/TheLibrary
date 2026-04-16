@@ -1,4 +1,4 @@
-# LLM Module
+# LLM Infrastructure
 
 Минимальный модуль с двумя ручками:
 - `POST /recommend`
@@ -37,15 +37,15 @@ pip install faiss-cpu
 ```
 
 ```bash
-python3 llm_module/scripts/build_faiss_index.py \
-  --catalog llm_module/catalog_data/books_40.json \
-  --index-out llm_module/catalog_data/books_40.faiss \
-  --meta-out llm_module/catalog_data/books_40.faiss.meta.json
+python3 infrastructure/llm/scripts/build_faiss_index.py \
+  --catalog infrastructure/llm/catalog_data/books_40.json \
+  --index-out infrastructure/llm/catalog_data/books_40.faiss \
+  --meta-out infrastructure/llm/catalog_data/books_40.faiss.meta.json
 ```
 
 Включение индекса в API:
 ```bash
 export USE_FAISS=true
-export FAISS_INDEX_PATH=llm_module/catalog_data/books_40.faiss
-export FAISS_META_PATH=llm_module/catalog_data/books_40.faiss.meta.json
+export FAISS_INDEX_PATH=infrastructure/llm/catalog_data/books_40.faiss
+export FAISS_META_PATH=infrastructure/llm/catalog_data/books_40.faiss.meta.json
 ```

@@ -103,6 +103,6 @@
     "ru099",
     "ru100"
   ],
-  "catalog_path": "/Users/garfieldmk/Desktop/study/pp/TheLibrary/llm_module/catalog_data/books_40.json",
+  "catalog_path": "/Users/garfieldmk/Desktop/study/pp/TheLibrary/infrastructure/llm/catalog_data/books_40.json",
   "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 }
