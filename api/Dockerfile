@@ -2,6 +2,8 @@ FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONPATH=/app/core/src:/app
 
 # Copy dependency manifest from build context root and install
 COPY requirements.txt ./
