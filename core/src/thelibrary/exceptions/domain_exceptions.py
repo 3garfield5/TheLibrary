@@ -84,4 +84,10 @@ class InvalidUserListDataError(DomainError):
 class UserListAlreadyExistsError(DomainError):
     """Поднимается, когда список с такими уникальными атрибутами уже существует."""
 
-    status_code: int = 409
+    pass
+
+
+class InvalidLLMRequestError(Exception):
+    """Поднимается, когда данные для LLM-запроса некорректны."""
+
+    pass

@@ -2,6 +2,8 @@ FROM python:3.14
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONPATH=/app/core/src:/app
 
 COPY api/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade pip \
