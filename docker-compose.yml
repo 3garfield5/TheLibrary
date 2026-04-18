@@ -1,47 +1,18 @@
+version: "3.8"
+
 services:
-  ollama:
-    image: ollama/ollama:latest
-    container_name: thelibrary-ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-    healthcheck:
-      test: ["CMD", "ollama", "list"]
-      interval: 10s
-      timeout: 5s
-      retries: 20
-    restart: unless-stopped
-
-  ollama-init:
-    image: ollama/ollama:latest
-    container_name: thelibrary-ollama-init
-    depends_on:
-      ollama:
-        condition: service_healthy
-    environment:
-      OLLAMA_HOST: http://ollama:11434
-    entrypoint: ["ollama"]
-    command: ["pull", "qwen2.5:1.5b"]
-    restart: on-failure:5
-
-  app:
+  api:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: thelibrary-llm-app
-    depends_on:
-      ollama-init:
-        condition: service_completed_successfully
+      dockerfile: api/Dockerfile
+    container_name: thelibrary-api
     environment:
-      APP_HOST: 0.0.0.0
-      APP_PORT: 8000
-      LLM_BACKEND: ollama
-      LLM_MODEL: qwen2.5:1.5b
-      OLLAMA_BASE_URL: http://ollama:11434
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8000
     ports:
       - "8000:8000"
+    volumes:
+      - ./infrastructure:/app/infrastructure:ro
     restart: unless-stopped
 
-volumes:
-  ollama_data:
+volumes: {}
