@@ -7,6 +7,7 @@ from thelibrary.domain.value_objects import (
     RatingsCount,
     ReleaseYear,
     Title,
+    ReviewRating
 )
 
 
@@ -46,6 +47,15 @@ class Book:
     @property
     def ratings_count(self) -> RatingsCount:
         return self._ratings_count
+    
+    def increment_ratings_count(self) -> None:
+        self._ratings_count = RatingsCount(self._ratings_count.value + 1)
+
+    def decrement_ratings_count(self) -> None:
+        self._ratings_count = RatingsCount(self._ratings_count.value - 1)
+
+    def update_rating(self, review_rating: ReviewRating) -> None:
+        self._rating = Rating((self._rating.value * self._ratings_count.value + review_rating.value) / (self._ratings_count.value + 1))
 
     @property
     def release_year(self) -> ReleaseYear:

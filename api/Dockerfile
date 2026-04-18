@@ -1,22 +1,23 @@
-FROM python:3.11-slim
+FROM python:3.14
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONPATH=/app/core/src:/app
 
-# Copy dependency manifest from build context root and install
-COPY requirements.txt ./
+COPY api/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Copy full project into the image
-COPY . .
+COPY core/ ./core
+RUN pip install --no-cache-dir ./core
 
-# Expose default FastAPI port
+COPY infrastructure/ ./infrastructure
+
+COPY api/ ./api
+
 EXPOSE 8000
 
 ENV APP_HOST=0.0.0.0 APP_PORT=8000
 
-# Run the FastAPI app.
 CMD ["uvicorn", "api.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

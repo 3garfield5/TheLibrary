@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from thelibrary.domain.entities import Review
-from thelibrary.domain.repositories.review_repository import ReviewRepository
+from thelibrary.domain.repositories import ReviewRepository, BookRepository
 from thelibrary.domain.value_objects import (
     BookId,
     Comment,
@@ -13,6 +13,7 @@ from thelibrary.exceptions.domain_exceptions import (
     InvalidReviewDataError,
     ReviewAlreadyExistsError,
 )
+from thelibrary.use_cases.book import GetBookById, GetBookByIdCommand
 
 
 @dataclass(frozen=True)
@@ -24,8 +25,9 @@ class CreateReviewCommand:
 
 
 class CreateReview:
-    def __init__(self, review_repository: ReviewRepository):
+    def __init__(self, review_repository: ReviewRepository, book_repository: BookRepository):
         self.review_repository = review_repository
+        self.book_repository = book_repository
 
     def execute(self, command: CreateReviewCommand) -> ReviewId:
         # Преобразуем в value objects
@@ -57,4 +59,8 @@ class CreateReview:
         )
 
         self.review_repository.save(review)
+        book = GetBookById(book_repository=self.book_repository).execute(GetBookByIdCommand(id=book_id.value))
+        book.update_rating(rating)
+        book.increment_ratings_count()
+        self.book_repository.save(book)
         return review.id

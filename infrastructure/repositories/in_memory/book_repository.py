@@ -11,6 +11,12 @@ class InMemoryBookRepository(BookRepository):
         self._books_by_id: dict[BookId, Book] = {}
 
     def save(self, book: Book) -> None:
+        # если книга уже есть - обновляем
+        existing = self._books_by_id.get(book.id)
+
+        if existing:
+            self._books_by_id.pop(book.id, None)
+
         self._books_by_id[book.id] = book
 
     def get_by_id(self, id: BookId) -> Optional[Book]:
