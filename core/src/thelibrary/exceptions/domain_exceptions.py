@@ -33,6 +33,12 @@ class UserNotFoundError(DomainError):
     status_code: int = 404
 
 
+class PermissionDeniedError(DomainError):
+    """Raised when a user is not allowed to perform an action."""
+
+    status_code: int = 403
+
+
 class InvalidBookDataError(DomainError):
     """Поднимается, когда данные для создания книги некорректны."""
 
@@ -84,10 +90,28 @@ class InvalidUserListDataError(DomainError):
 class UserListAlreadyExistsError(DomainError):
     """Поднимается, когда список с такими уникальными атрибутами уже существует."""
 
-    pass
+    status_code: int = 409
 
 
-class InvalidLLMRequestError(Exception):
+class UserListNotFoundError(DomainError):
+    """Raised when a user book list is not found."""
+
+    status_code: int = 404
+
+
+class BookAlreadyInUserListError(DomainError):
+    """Raised when a book is already present in a user book list."""
+
+    status_code: int = 409
+
+
+class BookNotInUserListError(DomainError):
+    """Raised when a book is not present in a user book list."""
+
+    status_code: int = 404
+
+
+class InvalidLLMRequestError(DomainError):
     """Поднимается, когда данные для LLM-запроса некорректны."""
 
-    pass
+    status_code: int = 400

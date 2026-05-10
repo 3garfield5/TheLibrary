@@ -1,7 +1,9 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from api.app.routers import books, llm, users
+from thelibrary.exceptions.domain_exceptions import DomainError
+
+from api.app.routers import books, llm, reviews, user_lists, users
 
 app = FastAPI(
     title="TheLibrary API",
@@ -18,6 +20,8 @@ def domain_error_handler(request: Request, exc: DomainError):
 # подключаем роуты
 app.include_router(users.router)
 app.include_router(books.router)
+app.include_router(reviews.router)
+app.include_router(user_lists.router)
 app.include_router(llm.router)
 
 

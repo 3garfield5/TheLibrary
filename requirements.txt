@@ -1,4 +1,11 @@
+# Unified runtime dependencies for API/infrastructure + core.
+# Core-specific deps are defined separately in core/requirements.txt.
+-r core/requirements.txt
+
 fastapi>=0.116.0,<1.0.0
-uvicorn>=0.35.0,<1.0.0
+uvicorn[standard]>=0.35.0,<1.0.0
+pydantic>=2.0.0,<3.0.0
+sqlalchemy>=2.0.0,<3.0.0
+psycopg2-binary>=2.9.0,<3.0.0
 langchain-openai>=0.3.0,<1.0.0
 sentence-transformers>=3.0.0,<4.0.0

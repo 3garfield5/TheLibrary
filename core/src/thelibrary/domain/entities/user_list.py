@@ -49,7 +49,18 @@ class UserList:
 
     @property
     def books(self) -> list[BookId]:
-        return self._books
+        return list(self._books)
+
+    def add_book(self, book_id: BookId) -> None:
+        if book_id not in self._books:
+            self._books.append(book_id)
+
+    def remove_book(self, book_id: BookId) -> None:
+        if book_id in self._books:
+            self._books.remove(book_id)
+
+    def has_book(self, book_id: BookId) -> bool:
+        return book_id in self._books
 
     def __str__(self) -> str:
         return f'Список с названием "{self.title.value}" и {len(self.books)} книгами'
@@ -72,5 +83,3 @@ class UserList:
             is_private=is_private,
             books=books,
         )
-
-    # fill with methods

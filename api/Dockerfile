@@ -5,7 +5,8 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONPATH=/app/core/src:/app
 
-COPY api/requirements.txt ./requirements.txt
+COPY requirements.txt ./requirements.txt
+COPY core/requirements.txt ./core/requirements.txt
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 

@@ -1,18 +1,79 @@
-version: "3.8"
-
 services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: thelibrary-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: thelibrary-ollama-init
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["ollama"]
+    command: ["pull", "${LLM_MODEL:-qwen2.5:1.5b}"]
+    restart: on-failure:5
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: thelibrary-postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
   api:
     build:
       context: .
       dockerfile: api/Dockerfile
     container_name: thelibrary-api
+    env_file:
+      - .env
     environment:
-      - APP_HOST=0.0.0.0
-      - APP_PORT=8000
+      APP_HOST: ${APP_HOST}
+      APP_PORT: ${APP_PORT}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      LLM_MODEL: ${LLM_MODEL:-qwen2.5:1.5b}
+      OLLAMA_BASE_URL: http://ollama:11434
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-EMPTY}
     ports:
-      - "8000:8000"
+      - "${APP_PORT}:8000"
+    depends_on:
+      ollama-init:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
     volumes:
       - ./infrastructure:/app/infrastructure:ro
     restart: unless-stopped
 
-volumes: {}
+volumes:
+  ollama_data: {}
+  postgres_data: {}
