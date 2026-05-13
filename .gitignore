@@ -208,3 +208,7 @@ __marimo__/
 
 # data files
 /Users/garfieldmk/Desktop/study/pp/TheLibrary/llm_module/catalog_data/
+
+# docs 
+docs
+.DS_Store
