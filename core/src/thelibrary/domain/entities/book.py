@@ -6,8 +6,8 @@ from thelibrary.domain.value_objects import (
     Rating,
     RatingsCount,
     ReleaseYear,
+    ReviewRating,
     Title,
-    ReviewRating
 )
 
 
@@ -47,7 +47,7 @@ class Book:
     @property
     def ratings_count(self) -> RatingsCount:
         return self._ratings_count
-    
+
     def increment_ratings_count(self) -> None:
         self._ratings_count = RatingsCount(self._ratings_count.value + 1)
 
@@ -55,7 +55,33 @@ class Book:
         self._ratings_count = RatingsCount(self._ratings_count.value - 1)
 
     def update_rating(self, review_rating: ReviewRating) -> None:
-        self._rating = Rating((self._rating.value * self._ratings_count.value + review_rating.value) / (self._ratings_count.value + 1))
+        new_rating = (
+            self._rating.value * self._ratings_count.value + review_rating.value
+        ) / (self._ratings_count.value + 1)
+        self._rating = Rating(new_rating)
+
+    def remove_rating(self, review_rating: ReviewRating) -> None:
+        if self._ratings_count.value <= 1:
+            self._rating = Rating(0.0)
+            self._ratings_count = RatingsCount(0)
+            return
+
+        new_count = self._ratings_count.value - 1
+        new_rating = (
+            self._rating.value * self._ratings_count.value - review_rating.value
+        ) / new_count
+        self._rating = Rating(new_rating)
+        self._ratings_count = RatingsCount(new_count)
+
+    def update_details(
+        self,
+        title: Title,
+        author: Author,
+        release_year: ReleaseYear,
+    ) -> None:
+        self._title = title
+        self._author = author
+        self._release_year = release_year
 
     @property
     def release_year(self) -> ReleaseYear:
@@ -82,5 +108,3 @@ class Book:
 
     def __str__(self) -> str:
         return f"Книга {self.title} автора {self.author}"
-
-    # fill with methods

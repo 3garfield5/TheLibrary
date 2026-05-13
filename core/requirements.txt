@@ -1,0 +1,2 @@
+# Core library runtime dependencies.
+# Keep this file focused on external packages required by `core`.

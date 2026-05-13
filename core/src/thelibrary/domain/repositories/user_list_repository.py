@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from thelibrary.domain.entities import UserList
-from thelibrary.domain.value_objects import UserListId
+from thelibrary.domain.value_objects import UserId, UserListId
 
 
 class UserListRepository(ABC):
@@ -19,5 +19,5 @@ class UserListRepository(ABC):
         pass
 
     @abstractmethod
-    def get_by_user_id(self, user_id: str) -> Optional[list[UserList]]:
+    def get_by_user_id(self, user_id: UserId) -> list[UserList]:
         pass
